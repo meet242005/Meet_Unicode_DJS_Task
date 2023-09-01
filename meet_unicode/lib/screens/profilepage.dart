@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:meet_unicode/constants/colors.dart';
+import 'package:meet_unicode/screens/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -19,19 +24,40 @@ class _ProfilePageState extends State<ProfilePage> {
   final emailController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  Future checkSignIn() async {
+    // if (GetStorage().hasData("is_signed_in")) {
+    //   Get.offAll(() => const HomePage());
+    // }
+  }
+
+  Future registerUser() async {
+    if (!formKey.currentState!.validate()) return;
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setStringList('userinfo', [
+      nameController.text,
+      phoneController.text,
+      emailController.text,
+      birthdateController.text
+    ]);
+
+    Get.offAll(() => const HomePage());
+  }
+
+  void clearForm() {
+    nameController.text = "";
+    phoneController.text = "";
+    emailController.text = "";
+    birthdateController.text = "";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   backgroundColor: Colors.white,
-      //   title: SvgPicture.asset(
-      //     "assets/svg/unicode_logo.svg",
-      //     height: 45,
-      //     fit: BoxFit.fitHeight,
-      //   ),
-      // ),
-
       body: SizedBox(
         child: SingleChildScrollView(
           child: Padding(
@@ -59,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: Colors.grey.shade300,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                   Center(
                     child: SvgPicture.asset(
@@ -69,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                   Container(
                     width: double.infinity,
@@ -175,6 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       keyboardType: TextInputType.emailAddress,
                       controller: birthdateController,
                       autovalidateMode: AutovalidateMode.disabled,
+                      readOnly: true,
                       validator: (input) {
                         if (input!.isNotEmpty) {
                           return null;
@@ -215,10 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            nameController.text = "";
-                            phoneController.text = "";
-                            emailController.text = "";
-                            birthdateController.text = "";
+                            clearForm();
                           },
                           child: Container(
                               width: double.infinity,
@@ -243,36 +267,46 @@ class _ProfilePageState extends State<ProfilePage> {
                         width: 10,
                       ),
                       Expanded(
-                        child: Container(
-                            width: double.infinity,
-                            height: 60,
-                            padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                                color: AppColors.primaryColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8))),
-                            child: const Center(
-                              child: Text(
-                                "PROCEED",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
-                                    color: Colors.white),
-                              ),
-                            )),
+                        child: InkWell(
+                          onTap: () {
+                            registerUser();
+                          },
+                          child: Container(
+                              width: double.infinity,
+                              height: 60,
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              child: const Center(
+                                child: Text(
+                                  "PROCEED",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      color: Colors.white),
+                                ),
+                              )),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(
                     height: 60,
                   ),
-                  const Center(
-                    child: Text(
-                      "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                          color: Colors.grey),
+                  InkWell(
+                    onTap: () {
+                      Get.offAll(() => const HomePage());
+                    },
+                    child: const Center(
+                      child: Text(
+                        "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 10,
+                            color: Colors.grey),
+                      ),
                     ),
                   ),
                 ],
