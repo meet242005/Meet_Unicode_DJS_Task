@@ -1,8 +1,6 @@
-import 'dart:convert';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,12 +21,14 @@ class _HomePageState extends State<HomePage> {
   var phone = "";
   var dob = "";
   var city = "";
+  List<Contact>? contacts;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchStorageData();
+    getContactsList();
     geoLocator();
   }
 
@@ -51,6 +51,12 @@ class _HomePageState extends State<HomePage> {
         nameinitial = tempname[0];
       }
     });
+  }
+
+  Future getContactsList() async {
+    if (await FlutterContacts.requestPermission(readonly: true)) {
+      contacts = await FlutterContacts.getContacts();
+    }
   }
 
   Future geoLocator() async {
@@ -124,6 +130,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+          scrolledUnderElevation: 0,
           centerTitle: false,
           backgroundColor: AppColors.primaryColor,
           title: const Text(
@@ -157,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.white),
                     ),
                     CircleAvatar(
-                      child: Text(nameinitial),
+                      child: Text(nameinitial.toUpperCase()),
                     )
                   ],
                 ),
@@ -254,13 +261,68 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          SizedBox(
-            child: SingleChildScrollView(
+          Expanded(
+            child: SizedBox(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(15, 60, 15, 20),
-                child: Column(
-                  children: [Text(name)],
-                ),
+                padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
+                child: contacts == null
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: AppColors.primaryColor,
+                      ))
+                    : ListView.builder(
+                        itemCount: contacts!.length,
+                        itemBuilder: (context, index) {
+                          var profile = contacts![index].displayName;
+
+                          if (profile.contains(" ")) {
+                            List name = profile.split(" ");
+                            profile = name[0].substring(0, 1) +
+                                name[name.length - 1].substring(0, 1);
+                          } else {
+                            profile = profile[0];
+                          }
+                          return Column(
+                            children: [
+                              Container(
+                                  width: double.infinity,
+                                  height: 60,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        child: Text(profile.toUpperCase()),
+                                      ),
+                                      VerticalDivider(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              contacts![index].displayName,
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              Divider(
+                                color: Colors.grey.shade300,
+                              )
+                            ],
+                          );
+                        },
+                      ),
               ),
             ),
           ),

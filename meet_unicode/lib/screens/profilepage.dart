@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/route_manager.dart';
@@ -57,52 +55,78 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          scrolledUnderElevation: 0,
+          centerTitle: false,
+          backgroundColor: Colors.white,
+          title: const Text(
+            "DJSCE Unicode'23",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+                color: AppColors.primaryColor),
+          )),
       body: SizedBox(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 60, 15, 20),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(
+                    height: 30,
+                  ),
+
                   const Text(
-                    "Welcome,",
+                    "Hello User!",
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 28,
+                        fontSize: 24,
                         color: AppColors.primaryColor),
                   ),
                   Text(
-                    "Please Proceed with Registration",
+                    "Register to get started",
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
                         color: Colors.grey.shade900),
                   ),
-                  Divider(
-                    color: Colors.grey.shade300,
-                  ),
+
+                  // Divider(
+                  //   color: Colors.grey.shade300,
+                  // ),
                   const SizedBox(
-                    height: 30,
+                    height: 50,
                   ),
                   Center(
                     child: SvgPicture.asset(
-                      "assets/svg/login.svg",
-                      fit: BoxFit.contain,
-                      height: 200,
+                      "assets/svg/unicode_logo.svg",
+                      height: 120,
                     ),
                   ),
+                  // Center(
+                  //   child: SvgPicture.asset(
+                  //     "assets/svg/login.svg",
+                  //     fit: BoxFit.contain,
+                  //     height: 200,
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 30,
+                  // ),
                   const SizedBox(
-                    height: 30,
+                    height: 50,
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8))),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.name,
@@ -126,14 +150,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8))),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.phone,
@@ -157,14 +182,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8))),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
@@ -188,14 +214,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 15,
                   ),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8))),
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.emailAddress,
@@ -248,10 +275,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               width: double.infinity,
                               height: 60,
                               padding: const EdgeInsets.all(5),
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(8))),
                               child: const Center(
                                 child: Text(
                                   "CLEAR",
@@ -292,25 +319,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Get.offAll(() => const HomePage());
-                    },
-                    child: const Center(
-                      child: Text(
-                        "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 10,
-                            color: Colors.grey),
-                      ),
-                    ),
-                  ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 30,
+        child: InkWell(
+          onTap: () {
+            Get.offAll(() => const HomePage());
+          },
+          child: const Center(
+            child: Text(
+              "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                  color: Colors.grey),
             ),
           ),
         ),
