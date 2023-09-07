@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:meet_unicode/main.dart';
+import 'package:meet_unicode/screens/contact_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/colors.dart';
@@ -51,6 +54,12 @@ class _HomePageState extends State<HomePage> {
         nameinitial = tempname[0];
       }
     });
+  }
+
+  Future deleteStorageData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.remove('userinfo');
+    Get.offAll(() => const SplashScreen());
   }
 
   Future getContactsList() async {
@@ -156,16 +165,32 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Hello, $name",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
-                          color: Colors.white),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          child: Text(nameinitial.toUpperCase()),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Hello, $name",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Colors.white),
+                        ),
+                      ],
                     ),
-                    CircleAvatar(
-                      child: Text(nameinitial.toUpperCase()),
-                    )
+                    InkWell(
+                      onTap: () {
+                        deleteStorageData();
+                      },
+                      child: const Icon(
+                        Icons.logout,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
                 const Divider(
@@ -284,38 +309,49 @@ class _HomePageState extends State<HomePage> {
                           }
                           return Column(
                             children: [
-                              Container(
-                                  width: double.infinity,
-                                  height: 60,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        child: Text(profile.toUpperCase()),
-                                      ),
-                                      VerticalDivider(
-                                        color: Colors.grey.shade300,
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              contacts![index].displayName,
-                                              style: TextStyle(fontSize: 14),
-                                            ),
-                                          ],
+                              InkWell(
+                                onTap: () async {
+                                  final fullContact =
+                                      await FlutterContacts.getContact(
+                                          contacts![index].id);
+                                  Get.bottomSheet(
+                                    ContactDetails(fullContact!, profile),
+                                  );
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    height: 60,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          child: Text(profile.toUpperCase()),
                                         ),
-                                      ),
-                                    ],
-                                  )),
+                                        VerticalDivider(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                contacts![index].displayName,
+                                                style: TextStyle(fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ),
                               Divider(
                                 color: Colors.grey.shade300,
                               )
@@ -327,6 +363,25 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+      extendBody: true,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SizedBox(
+          height: 20,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
+                style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

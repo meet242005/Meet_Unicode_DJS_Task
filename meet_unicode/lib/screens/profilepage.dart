@@ -26,12 +26,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
   }
 
-  Future checkSignIn() async {
-    // if (GetStorage().hasData("is_signed_in")) {
-    //   Get.offAll(() => const HomePage());
-    // }
-  }
-
   Future registerUser() async {
     if (!formKey.currentState!.validate()) return;
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -59,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
           scrolledUnderElevation: 0,
           centerTitle: false,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.grey.shade100,
           title: const Text(
             "DJSCE Unicode'23",
             style: TextStyle(
@@ -70,22 +64,18 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SizedBox(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
+            padding: const EdgeInsets.fromLTRB(15, 30, 15, 20),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-
                   const Text(
                     "Hello User!",
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 24,
-                        color: AppColors.primaryColor),
+                        color: Colors.black),
                   ),
                   Text(
                     "Register to get started",
@@ -94,31 +84,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         fontSize: 18,
                         color: Colors.grey.shade900),
                   ),
-
-                  // Divider(
-                  //   color: Colors.grey.shade300,
-                  // ),
+                  Divider(
+                    color: Colors.grey.shade300,
+                  ),
                   const SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
                   Center(
                     child: SvgPicture.asset(
-                      "assets/svg/unicode_logo.svg",
-                      height: 120,
+                      "assets/svg/login.svg",
+                      fit: BoxFit.contain,
+                      height: 200,
                     ),
                   ),
-                  // Center(
-                  //   child: SvgPicture.asset(
-                  //     "assets/svg/login.svg",
-                  //     fit: BoxFit.contain,
-                  //     height: 200,
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 30,
-                  // ),
                   const SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
                   Container(
                     width: double.infinity,
@@ -325,20 +305,26 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        height: 30,
-        child: InkWell(
-          onTap: () {
-            Get.offAll(() => const HomePage());
-          },
-          child: const Center(
-            child: Text(
-              "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 10,
-                  color: Colors.grey),
-            ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SizedBox(
+          height: 20,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () {
+                  // Get.offAll(() => const HomePage());
+                },
+                child: Text(
+                  "DJSCE Unicode'23 Task by Meet Chavan SY - 60004230269",
+                  style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900),
+                ),
+              ),
+            ],
           ),
         ),
       ),
