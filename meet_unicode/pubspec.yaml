@@ -21,6 +21,7 @@ dependencies:
   awesome_dialog: ^3.0.2
   flutter_contacts: ^1.1.7+1
   url_launcher: ^6.1.14
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

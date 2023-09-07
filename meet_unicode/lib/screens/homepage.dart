@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:meet_unicode/api.dart';
 import 'package:meet_unicode/main.dart';
 import 'package:meet_unicode/screens/contact_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +28,13 @@ class _HomePageState extends State<HomePage> {
   var dob = "";
   var city = "";
   List<Contact>? contacts;
+
+  var temp = "0°C";
+  var feels_like = "0°C";
+  var pressure = "0hPa";
+  var humidity = "0%";
+  var main = "Sunny Day";
+  var description = "Moderate Clouds";
 
   @override
   void initState() {
@@ -128,9 +138,28 @@ class _HomePageState extends State<HomePage> {
     Position? position = await Geolocator.getCurrentPosition();
     var placemark =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-
+    getWeatherData(position.latitude, position.longitude);
     setState(() {
       city = placemark[0].locality.toString();
+    });
+  }
+
+  Future getWeatherData(latitude, longitude) async {
+    var response = await WeatherAPI.fetchWeather(latitude, longitude);
+    var weatherdata = jsonDecode(response.body);
+    setState(() {
+      //convert kelvin to celcius K - 273.15
+      temp = double.parse((weatherdata['main']['temp'] - 273.15).toString())
+              .toStringAsFixed(2) +
+          "°C";
+      feels_like =
+          double.parse((weatherdata['main']['feels_like'] - 273.15).toString())
+                  .toStringAsFixed(2) +
+              "°C";
+      pressure = weatherdata['main']['pressure'].toString() + "hPa";
+      humidity = weatherdata['main']['humidity'].toString() + "%";
+      main = weatherdata['weather'][0]['main'].toString();
+      description = weatherdata['weather'][0]['description'].toString();
     });
   }
 
@@ -150,7 +179,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Container(
-            height: 150,
+            // height: 150,
             width: double.infinity,
             padding: const EdgeInsets.all(18),
             decoration: const BoxDecoration(
@@ -283,6 +312,110 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+                const Divider(
+                  color: Colors.white,
+                  thickness: 0.3,
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(70),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.cloud_queue_sharp,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                temp,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 24,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                                child: VerticalDivider(
+                                  color: Colors.white,
+                                  thickness: 1,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.wb_sunny_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                humidity,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Colors.white),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                                child: VerticalDivider(
+                                  color: Colors.white,
+                                  thickness: 1,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.wind_power_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                pressure,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Feels like $feels_like, $main, $description",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ],
+                  ),
+                )
               ],
             ),
           ),
@@ -344,7 +477,8 @@ class _HomePageState extends State<HomePage> {
                                             children: [
                                               Text(
                                                 contacts![index].displayName,
-                                                style: TextStyle(fontSize: 14),
+                                                style: const TextStyle(
+                                                    fontSize: 14),
                                               ),
                                             ],
                                           ),
